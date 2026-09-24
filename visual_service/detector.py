@@ -1,7 +1,6 @@
 from paddleocr import LayoutDetection
 import logging
 import numpy as np
-import cv2
 
 logger = logging.getLogger("visual_service")
 

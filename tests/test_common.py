@@ -1,20 +1,13 @@
-import pytest
 from common.schemas import (
     BoundingBox,
     Dimension,
-    TextAnchor,
-    Entity,
-    VisualElement,
-    TableCell,
-    TableRow,
-    Table,
     Block,
     Page,
     DocumentContent,
     AnalysisResponse,
 )
 from common.utils import get_centroid_y, spatial_sort
-from common.config import settings, Environment, LogLevel
+from common.config import settings, Environment
 
 def test_bounding_box_instantiation():
     bbox = BoundingBox(x1=10.0, y1=20.0, x2=100.0, y2=150.0)

@@ -4,6 +4,7 @@ import uvicorn
 import httpx
 import shutil
 import os
+import tempfile
 import uuid
 import time
 from common.config import settings
@@ -24,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-TEMP_DIR = "/tmp/doc_analysis_uploads"
+TEMP_DIR = os.path.join(tempfile.gettempdir(), "doc_analysis_uploads")
 os.makedirs(TEMP_DIR, exist_ok=True)
 
 @app.get("/health")
@@ -75,7 +76,6 @@ async def analyze_document(file: UploadFile = File(...)):
                 # Prepare pages for Visual Service
                 # Visual Service expects 'file' upload. We need to convert base64 back to bytes.
                 import base64
-                import io
                 
                 for p in pp_data["pages"]:
                     img_bytes = base64.b64decode(p["base64_image"])
@@ -262,4 +262,4 @@ async def analyze_document(file: UploadFile = File(...)):
             os.remove(file_path)
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host=settings.ORCHESTRATOR_HOST, port=settings.ORCHESTRATOR_PORT, reload=True)
