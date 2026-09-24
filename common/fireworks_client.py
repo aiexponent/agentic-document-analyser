@@ -1,3 +1,4 @@
+import base64
 from openai import AsyncOpenAI
 from common.config import settings
 from common.logger import configure_logger

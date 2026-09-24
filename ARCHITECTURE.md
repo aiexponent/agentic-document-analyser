@@ -1,6 +1,6 @@
 # System Architecture
 
-DocIntel Pro is built on a **Cloud-Native Microservices Architecture** designed for high throughput, scalability, and loose coupling.
+Agentic Document Analyser is built on a **Cloud-Native Microservices Architecture** designed for high throughput, scalability, and loose coupling.
 
 ## High-Level Diagram
 

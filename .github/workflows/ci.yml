@@ -8,6 +8,7 @@ on:
 
 jobs:
   frontend-check:
+    name: Frontend Quality & Build
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -20,27 +21,71 @@ jobs:
         node-version: '20.x'
         cache: 'npm'
         cache-dependency-path: frontend/package-lock.json
-    - run: npm ci
-    - run: npm run lint
-    - run: npm run build
+    - name: Install Dependencies
+      run: npm ci
+    - name: Run Lint & Typecheck
+      run: npm test
+    - name: Build Production Bundle
+      run: npm run build
 
-  backend-check:
+  backend-test:
+    name: Backend Test Suite & Lint
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [orchestrator, preprocessing_service, visual_service]
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python
+    - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
         cache: 'pip'
-    - name: Install Dependencies
+    - name: Install System Dependencies (Poppler & OpenCV libs)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y poppler-utils libgl1 libglib2.0-0
+    - name: Install Python Dependencies
       run: |
         python -m pip install --upgrade pip
-        if [ -f ${{ matrix.service }}/requirements.txt ]; then pip install -r ${{ matrix.service }}/requirements.txt; fi
-    - name: Syntax Check
+        pip install -r orchestrator/requirements.txt
+        pip install -r preprocessing_service/requirements.txt
+        pip install -r visual_service/requirements.txt
+        pip install -r requirements-dev.txt
+    - name: Lint with Ruff
       run: |
-        # Compile python files to check for syntax errors
-        python -m compileall ${{ matrix.service }}
+        ruff check .
+    - name: Run Pytest Suite
+      env:
+        ENV: dev
+        FIREWORKS_API_KEY: fake_ci_test_key
+      run: |
+        pytest tests/ -v --tb=short
+
+  security-audit:
+    name: Security & Vulnerability Audits
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    - name: Install Security Scanners
+      run: |
+        python -m pip install --upgrade pip
+        pip install bandit pip-audit
+    - name: Run Bandit Static Code Analysis
+      run: |
+        bandit -r common orchestrator preprocessing_service visual_service -ll
+    - name: Run pip-audit Dependency Vulnerability Scan
+      run: |
+        pip-audit -r orchestrator/requirements.txt || true
+        pip-audit -r preprocessing_service/requirements.txt || true
+        pip-audit -r visual_service/requirements.txt || true
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+    - name: Run npm audit (Production Dependencies)
+      working-directory: ./frontend
+      run: |
+        npm audit --omit=dev --audit-level=high || true

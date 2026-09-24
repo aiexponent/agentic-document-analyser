@@ -42,9 +42,6 @@ async def normalize_document(file: UploadFile = File(...)):
         if img is None:
              raise HTTPException(status_code=400, detail="Invalid image file or corrupt data")
         
-        if img is None:
-             raise HTTPException(status_code=400, detail="Invalid image file or corrupt data")
-        
         # Get original dims
         height, width, _ = img.shape
 

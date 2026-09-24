@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException
 import uvicorn
 import io
 import base64
@@ -32,7 +32,7 @@ async def detect_objects(file: UploadFile = File(...)):
         width, height = image.size
     except Exception as e:
         logger.error(f"Failed to load image: {e}")
-        return {"error": "Invalid image file"}
+        raise HTTPException(status_code=400, detail="Invalid image file")
 
     # Encode to base64
     base64_img = base64.b64encode(contents).decode('utf-8')
@@ -106,7 +106,6 @@ async def detect_objects(file: UploadFile = File(...)):
         
     except Exception as e:
         logger.error(f"Detection failed: {e}", exc_info=True)
-        from fastapi import HTTPException
         raise HTTPException(status_code=503, detail=f"Visual Intelligence Service Failed: {str(e)}")
 
 if __name__ == "__main__":

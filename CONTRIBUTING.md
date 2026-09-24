@@ -1,65 +1,155 @@
 # Contributing to Agentic Document Analyser
 
-Thanks for your interest in contributing. This project (DocIntel Pro) is maintained by [AI Exponent LLC](https://aiexponent.com) and is in **Alpha** — interfaces and service boundaries may still change.
+Thank you for your interest in contributing to **Agentic Document Analyser**! This project is maintained by [AiExponent](https://aiexponent.com) as part of our open-source AI governance toolchain.
 
-## Reporting bugs
+We welcome pull requests, bug reports, and suggestions from the community.
 
-Open a GitHub issue with:
+---
 
-- Which service is affected (orchestrator, preprocessing, visual, or frontend)
-- Python version (`python --version`) and Node version (`node --version`) if relevant
-- OS and whether you are running via Docker Compose or per-service `uvicorn`
-- Steps to reproduce, plus expected vs actual behaviour
-- A sample document is helpful when the issue is parsing-related (redact anything sensitive first)
+## Code of Conduct
 
-## Development setup
+All contributors and participants agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md) (Contributor Covenant v2.1). Please review it before participating.
 
-The system is a set of Python 3.10+ services plus a Next.js frontend. Use a project-scoped Conda (or venv) environment; do not install into system Python.
+---
+
+## Security Vulnerabilities
+
+Please do **NOT** report security vulnerabilities through public GitHub issues. Follow our coordinated vulnerability disclosure process outlined in [SECURITY.md](SECURITY.md) and email [security@aiexponent.com](mailto:security@aiexponent.com).
+
+---
+
+## Development Setup
+
+The system comprises three Python 3.11+ FastAPI microservices and a Next.js 14 frontend.
+
+### Prerequisites
+
+* **Python 3.11+** (virtualenv or conda recommended)
+* **Node.js 20+** and `npm`
+* **Poppler** (required for `pdf2image`):
+  * macOS: `brew install poppler`
+  * Ubuntu / Debian: `sudo apt-get install -y poppler-utils`
+* **Fireworks AI API Key**: required for visual document understanding ([fireworks.ai](https://fireworks.ai))
+
+### 1. Fast Start via Docker Compose (Recommended)
+
+To run the entire 4-container stack locally:
 
 ```bash
-conda create -n doc_analysis_env python=3.10 -y
-conda activate doc_analysis_env
+# Configure environment
+cp .env.cloud.template .env
+# Edit .env and insert your FIREWORKS_API_KEY
 
-pip install -r preprocessing_service/requirements.txt
-pip install -r visual_service/requirements.txt
-pip install -r orchestrator/requirements.txt
+# Build and start services
+docker compose up --build
 ```
 
-PDF processing needs PopplerUtils (`brew install poppler` on macOS, `sudo apt-get install poppler-utils` on Ubuntu). The visual service needs a Fireworks AI API key:
+Endpoints will be available at:
+* **Frontend UI**: [http://localhost:3001](http://localhost:3001)
+* **Orchestrator Gateway**: [http://localhost:8000](http://localhost:8000)
+* **Preprocessing Service**: [http://localhost:8001](http://localhost:8001)
+* **Visual Intelligence Service**: [http://localhost:8002](http://localhost:8002)
+
+### 2. Manual Local Service Setup
+
+#### Python Microservices
 
 ```bash
+# Create and activate Python 3.11 environment
+python3.11 -m venv .venv
+source .venv/bin/activate
+
+# Upgrade pip
+pip install --upgrade pip
+
+# Install dependencies for all services
+pip install -r orchestrator/requirements.txt
+pip install -r preprocessing_service/requirements.txt
+pip install -r visual_service/requirements.txt
+
+# Configure your API key
 export FIREWORKS_API_KEY="your_api_key_here"
 ```
 
-Run the full stack with Docker Compose:
+Run each service in a separate terminal:
 
 ```bash
-docker compose up
-```
-
-Or run each service in its own terminal:
-
-```bash
+# Terminal 1: Preprocessing Service (Port 8001)
 uvicorn preprocessing_service.main:app --port 8001 --reload
+
+# Terminal 2: Visual Intelligence Service (Port 8002)
 uvicorn visual_service.main:app --port 8002 --reload
+
+# Terminal 3: Orchestrator Gateway (Port 8000)
 uvicorn orchestrator.main:app --port 8000 --reload
-cd frontend && npm install && npm run dev   # UI on http://localhost:3000
 ```
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for how the services fit together.
+#### Frontend Application
 
-## Code contributions
+```bash
+cd frontend
+npm install
+npm run dev
+# Open http://localhost:3000
+```
 
-1. Fork the repository and branch from `main`.
-2. Keep a change scoped to one service where possible; note in the PR when a change crosses the orchestrator/worker boundary.
-3. Add or update tests for the service you touch. The Python services use `pytest`:
+---
 
-   ```bash
-   pytest visual_service/ preprocessing_service/ -v
-   ```
+## Running Tests & Quality Gates
 
-4. Open a PR against `main` describing the change and how you verified it. CI (`.github/workflows/ci.yml`) must pass.
+Before submitting a pull request, ensure all tests and quality checks pass locally.
+
+### Python Backend
+
+```bash
+# Run automated test suite
+pytest tests/ -v
+
+# Run linting check
+ruff check .
+```
+
+### Next.js Frontend
+
+```bash
+cd frontend
+npm run lint
+npm run build
+```
+
+---
+
+## Contribution Workflow & PR Guidelines
+
+1. **Fork and Branch**:
+   * Fork the repository on GitHub.
+   * Create a topic branch from `main`:
+     ```bash
+     git checkout -b feat/your-feature-name
+     # or
+     git checkout -b fix/your-bugfix-name
+     ```
+
+2. **Commit Message Conventions**:
+   We follow [Conventional Commits](https://www.conventionalcommits.org/):
+   * `feat(service)`: New feature or capability
+   * `fix(service)`: Bug fix
+   * `docs`: Documentation updates
+   * `test`: Adding or updating test cases
+   * `chore`: Build scripts, dependencies, CI configuration
+
+3. **Scope and Modularity**:
+   * Keep changes focused and self-contained.
+   * If a change spans across the orchestrator and a worker service, clearly explain the contract evolution in the PR description.
+   * Never commit API keys, secrets, or raw proprietary customer documents.
+
+4. **Pull Request Submission**:
+   * Open your PR against `main`.
+   * Fill out the PR template describing the problem, solution, and testing performed.
+   * Ensure GitHub Actions CI workflows pass cleanly.
+
+---
 
 ## License
 
-By contributing, you agree that your contributions are licensed under the terms of this repository's [LICENSE](LICENSE).
+By contributing to Agentic Document Analyser, you agree that your contributions are licensed under the [Apache License 2.0](LICENSE).
