@@ -55,16 +55,16 @@ export default function Home() {
       <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-white/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 group cursor-pointer">
-            <div className="bg-gradient-to-br from-blue-600 to-indigo-600 p-2 rounded-xl shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform duration-300">
+            <div className="bg-gradient-to-br from-[#0D5463] to-teal-700 p-2 rounded-xl shadow-lg shadow-teal-900/20 group-hover:scale-105 transition-transform duration-300">
               <Layout className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-800 to-slate-600">
-              DocIntel <span className="text-blue-600 opacity-80">Pro</span>
+            <span className="font-bold text-xl tracking-tight text-slate-800">
+              AiExponent <span className="text-teal-700 font-semibold">| Agentic Document Analyser</span>
             </span>
           </div>
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50/50 border border-blue-100/50 text-xs font-medium text-blue-700">
-              <Zap className="w-3.5 h-3.5 fill-blue-700" />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50/60 border border-teal-100 text-xs font-medium text-teal-800">
+              <Zap className="w-3.5 h-3.5 fill-teal-700 text-teal-700" />
               Powered by Fireworks AI
             </div>
           </div>
@@ -82,12 +82,11 @@ export default function Home() {
             className="text-center space-y-6 max-w-3xl mx-auto py-12"
           >
             <h1 className="text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.15]">
-              Transform Documents into <br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600">Actionable Intelligence</span>
+              Transform Regulated Documents into <br />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-700 via-teal-800 to-slate-900">Structured AI Evidence</span>
             </h1>
             <p className="text-lg text-slate-500 leading-relaxed max-w-2xl mx-auto">
-              Advanced layout analysis, OCR, and semantic understanding driven by Qwen2-VL.
-              Structure your unstructured data with pixel-perfect precision.
+              Visual-first VLM document intelligence for EU AI Act Article 9 risk management &amp; Annex IV technical documentation. Extract schemas, tables, and architecture diagrams with pixel-perfect precision.
             </p>
           </motion.div>
         )}
@@ -149,7 +148,7 @@ export default function Home() {
       {/* Footer */}
       {(analysisResult || previewUrl) && (
         <footer className="py-8 text-center text-sm text-slate-400 border-t border-slate-200/50 bg-white/30">
-          <p>© 2026 DocIntel Pro. All rights reserved.</p>
+          <p>© 2026 AiExponent LLC. All rights reserved.</p>
         </footer>
       )}
     </div>

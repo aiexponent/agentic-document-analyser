@@ -1,6 +1,5 @@
 from pydantic_settings import BaseSettings
 from enum import Enum
-import os
 
 class Environment(str, Enum):
     DEV = "dev"
@@ -30,6 +29,8 @@ class Settings(BaseSettings):
     FIREWORKS_MODEL: str = "accounts/fireworks/models/qwen3-vl-30b-a3b-instruct"
 
     # Orchestrator
+    ORCHESTRATOR_HOST: str = "127.0.0.1"
+    ORCHESTRATOR_PORT: int = 8000
     ORCHESTRATOR_TIMEOUT: int = 30
     
     class Config:
