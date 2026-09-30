@@ -1,49 +1,106 @@
 version: 2
+
+# Security fixes arrive as one grouped PR per ecosystem. Routine frontend
+# bumps arrive as one grouped PR. Routine major bumps are not proposed for npm
+# or pip: they are migrations and get planned by hand. Security updates are not
+# affected by that rule. The cooldown keeps versions published in the last
+# week out of version PRs.
+
 updates:
-  # Python Microservices
   - package-ecosystem: "pip"
     directory: "/orchestrator"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+    # Requirements here are open floors such as "numpy>=1.26". Only touch one
+    # when the range would block a needed version, never to raise the floor.
+    versioning-strategy: "increase-if-necessary"
+    open-pull-requests-limit: 5
     labels:
       - "dependencies"
       - "orchestrator"
+    groups:
+      pip-security:
+        applies-to: security-updates
+        patterns: ["*"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "pip"
     directory: "/preprocessing_service"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+    # Requirements here are open floors such as "numpy>=1.26". Only touch one
+    # when the range would block a needed version, never to raise the floor.
+    versioning-strategy: "increase-if-necessary"
+    open-pull-requests-limit: 5
     labels:
       - "dependencies"
       - "preprocessing"
+    groups:
+      pip-security:
+        applies-to: security-updates
+        patterns: ["*"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "pip"
     directory: "/visual_service"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+    # Requirements here are open floors such as "numpy>=1.26". Only touch one
+    # when the range would block a needed version, never to raise the floor.
+    versioning-strategy: "increase-if-necessary"
+    open-pull-requests-limit: 5
     labels:
       - "dependencies"
       - "visual-service"
+    groups:
+      pip-security:
+        applies-to: security-updates
+        patterns: ["*"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
-  # Next.js Frontend
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
     labels:
       - "dependencies"
       - "frontend"
+    groups:
+      npm-minor-patch:
+        applies-to: version-updates
+        update-types: ["minor", "patch"]
+      npm-security:
+        applies-to: security-updates
+        patterns: ["*"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
-  # GitHub Actions Workflows
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 5
     labels:
       - "dependencies"
       - "github-actions"
+    groups:
+      actions:
+        patterns: ["*"]
