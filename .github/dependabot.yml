@@ -1,5 +1,8 @@
 version: 2
 
+# Monthly runs (PRD-315, 2026-10-11) keep bot PRs to one batch a month.
+# Security updates do not follow this schedule and still arrive right away.
+
 # Security fixes arrive as one grouped PR per ecosystem. Routine frontend
 # bumps arrive as one grouped PR. Routine major bumps are not proposed for npm
 # or pip: they are migrations and get planned by hand. Security updates are not
@@ -10,7 +13,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/orchestrator"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     cooldown:
       default-days: 7
     # Requirements here are open floors such as "numpy>=1.26". Only touch one
@@ -31,7 +34,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/preprocessing_service"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     cooldown:
       default-days: 7
     # Requirements here are open floors such as "numpy>=1.26". Only touch one
@@ -52,7 +55,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/visual_service"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     cooldown:
       default-days: 7
     # Requirements here are open floors such as "numpy>=1.26". Only touch one
@@ -73,7 +76,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     cooldown:
       default-days: 7
     open-pull-requests-limit: 5
@@ -94,7 +97,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     cooldown:
       default-days: 7
     open-pull-requests-limit: 5
